@@ -55,31 +55,54 @@ class HashTable { // get O(1), set O(1), deleteKey O(1)
 
 
   read(key) {
-    // Your code here
+    const index = this.hashMod(key);
+    let currNode = this.data[index];
+    while (currNode) {
+      if (currNode.key === key) return currNode.value;
+      currNode = currNode.next
+    }
+    return undefined;
   }
 
 
   resize() {
-    // Your code here
+    const newCapacity = this.capacity * 2;
+    const oldData = this.data;
+    // this.data = new Array(newCapacity).fill(null);
+    this.capacity = newCapacity;
+    this.data = new Array(newCapacity).fill(null);
+    this.count = 0;
+
+    oldData.forEach(ele => {
+      let currNode = ele;
+      while (currNode) {
+        this.insert(currNode.key, currNode.value);
+        currNode = currNode.next
+      }
+    })
   }
 
 
   delete(key) {
-    // Your code here
+    const index = this.hashMod(key);
+    let currNode = this.data[index];
+    let prevNode = null;
+
+    while (currNode) {
+      if (currNode.key === key) {
+        this.count--
+       if(prevNode) {
+        prevNode.next = currNode.next;
+       } else {
+        this.data[index] = currNode.next
+      } return
+       }
+      prevNode = currNode
+      currNode = currNode.next;
+    }
+    
+    return "Key not found";
   }
 }
-
-// let hashTable = new HashTable(2);
-
-// console.log(hashTable.capacity)//.to.equal(2);
-
-// hashTable.insert("key2", "value2");
-// hashTable.insert("key4", "value4");
-
-// console.log("line82",hashTable.data[1].next.key)//.to.equal("key2")
-// console.log(hashTable.data[1].key)//.to.equal("key4")
-
-// console.log(hashTable.data[1].next.value)//.to.equal("value2")
-// console.log(hashTable.data[1].value)//.to.equal("value4")
 
 module.exports = HashTable;
